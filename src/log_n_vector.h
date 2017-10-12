@@ -19,21 +19,27 @@ public:
     this->size_ = 0;
     this->capacity_ = 0;
   }
+
   LogNVector(const LogNVector& other) : LogNVector() {
-    // TODO
+    int size = other.size();
+    for(int k = 0; k < size; k++)
+      this->push_back(other[k]);
   }
+
   LogNVector(std::initializer_list<T> ilist) : LogNVector() {
     typename std::initializer_list<T>::iterator iter;
     for (iter = ilist.begin(); iter != ilist.end(); iter++)
       this->push_back(*iter);
   }
+
   ~LogNVector() {
-    int numArrays = this->arrays.size() - 1;
+    // Destructor not necessary.  Already handled by std::unique_ptr
+    /*int numArrays = this->arrays.size() - 1;
     while(numArrays >= 0)
     {
       this->arrays[numArrays].reset();
       --numArrays;
-    }
+    }*/
   }
 
   // Getters --------------
@@ -65,12 +71,12 @@ public:
 public:
   const T& operator[](int index) const {
     int arrNum = log2(index + 1);
-    int position = index - getConsecMaxArrSize(arrNum - 1) - 1;
+    int position = index - getConsecMaxArrSize(arrNum - 1);
     return this->arrays[arrNum][position];
   }
   T& operator[](int index) {
     int arrNum = log2(index + 1);
-    int position = index - getConsecMaxArrSize(arrNum - 1) - 1;
+    int position = index - getConsecMaxArrSize(arrNum - 1);
     return this->arrays[arrNum][position];
   }
 
@@ -89,12 +95,14 @@ private:
     // first array is 0.  If no arrays return -1
     return this->arrays.size() - 1;
 
-    //return log2(capacity + 1) - 1;
+    //return log2(capacity + 2) - 1;
   }
 
   int getArrMaxSize(int num) const
   {
     // Returns capacity of what this->arrays[num] would be
+    if(num < 0)
+      return 0;
     return exp2(num);
   }
 
