@@ -64,12 +64,14 @@ public:
 // Operators -----------
 public:
   const T& operator[](int index) const {
-    int arrNum = log2(index);
+    int arrNum = log2(index + 1);
     int position = index - getConsecMaxArrSize(arrNum - 1) - 1;
-    return *(this->arrays[arrNum])[position];
+    return this->arrays[arrNum][position];
   }
   T& operator[](int index) {
-    // TODO
+    int arrNum = log2(index + 1);
+    int position = index - getConsecMaxArrSize(arrNum - 1) - 1;
+    return this->arrays[arrNum][position];
   }
 
   // Helpers -----------
@@ -78,9 +80,7 @@ private:
   {
     // Gets size of what next array should be and makes it
     int nextSize = getArrMaxSize( getLastArrNum() + 1 );
-    T temp[nextSize];
-    std::unique_ptr<T> ptr(temp);
-    this->arrays.push_back(ptr);
+    this->arrays.emplace_back(new T[nextSize]);
     this->capacity_ += nextSize;
   }
 
