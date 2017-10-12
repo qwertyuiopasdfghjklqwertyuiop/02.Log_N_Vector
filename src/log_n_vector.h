@@ -7,16 +7,17 @@
 
 template <typename T>
 class LogNVector {
-  // Members
+  // Members -----------------
 private:
   std::vector<std::unique_ptr<T[]> > arrays;
-  int size
-  int capacity;
+  int size_;
+  int capacity_;
 
-  // Constructor
+  // Constructor ----------------
 public:
   LogNVector() {
-    // TODO
+    this->size_ = 0;
+    this->capacity = 0;
   }
   LogNVector(const LogNVector& other) : LogNVector() {
     // TODO
@@ -28,42 +29,71 @@ public:
     // TODO
   }
 
-  // Getters
+  // Getters --------------
 public:
   int size() const noexcept {
-    return this->size;
+    return this->size_;
   }
   int capacity() const noexcept {
-    return this->capacity;
+    return this->capacity_;
   }
 
-  // Modifiers
+
+// Modifiers -----------
 public:
   void push_back(const T& value) {
-    // TODO
+    // Creates next array if capacity is full
+    if(this->size_ == this->capacity_)
+      this->createNextArray();
+
+    // Value goes into last array in first open location
+    int lastArr = this->getLastArrNum();
+    int arrNextLoc = this->size_ - getConsecMaxArrSize(lastArr - 1) + 1;
+
+    *(this->arrays[lastArr])[arrNextLoc] = value;
+    size_ += 1;
   }
 
-  // Operators
+// Operators -----------
 public:
   const T& operator[](int index) const {
-    // TODO
+
   }
   T& operator[](int index) {
     // TODO
   }
 
-  // Helpers
+  // Helpers -----------
 private:
-  int getLastArrNum()
+  void createNextArray()
   {
-    // Returns -1 if capacity = 0
-    return log2(capacity + 1) - 1;
+    // Gets the the num
+    int nextSize = getArrMaxSize( getLastArrNum() + 1 );
+    this->arrays.push_back(new T[nextSize]);
+    this->capcaity_ += nextSize;
   }
 
-  int getNextArrSize()
+  int getLastArrNum() const
   {
-    // Returns size of what the next created array will be
-    
+    // first array is 0.  If no arrays return -1
+    return this->arrays.size() - 1;
+
+    //return log2(capacity + 1) - 1;
+  }
+
+  int getArrMaxSize(int num) const
+  {
+    // Returns capacity of what this->arrays[num] would be
+    return exp2(num);
+  }
+
+  int getConsecMaxArrSize(int num) const
+  {
+  //Returns how many objects can fit within a num amount of arrays
+    int total = 0;
+    for (int k = 0; k <= num; k++)
+      total += getArrMaxSize(k);
+    return total;
   }
 
 
