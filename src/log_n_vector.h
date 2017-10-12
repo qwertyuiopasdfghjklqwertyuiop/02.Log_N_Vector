@@ -17,16 +17,23 @@ private:
 public:
   LogNVector() {
     this->size_ = 0;
-    this->capacity = 0;
+    this->capacity_ = 0;
   }
   LogNVector(const LogNVector& other) : LogNVector() {
     // TODO
   }
   LogNVector(std::initializer_list<T> ilist) : LogNVector() {
-    // TODO
+    typename std::initializer_list<T>::iterator iter;
+    for (iter = ilist.begin(); iter != ilist.end(); iter++)
+      this->push_back(*iter);
   }
   ~LogNVector() {
-    // TODO
+    int numArrays = this->arrays.size() - 1;
+    while(numArrays >= 0)
+    {
+      this->arrays[numArrays].reset();
+      --numArrays;
+    }
   }
 
   // Getters --------------
@@ -50,7 +57,7 @@ public:
     int lastArr = this->getLastArrNum();
     int arrNextLoc = this->size_ - getConsecMaxArrSize(lastArr - 1);
 
-    *(this->arrays[lastArr])[arrNextLoc] = value;
+    this->arrays[lastArr][arrNextLoc] = value;
     size_ += 1;
   }
 
@@ -69,10 +76,12 @@ public:
 private:
   void createNextArray()
   {
-    // Gets the the num
+    // Gets size of what next array should be and makes it
     int nextSize = getArrMaxSize( getLastArrNum() + 1 );
-    this->arrays.push_back(new T[nextSize]);
-    this->capcaity_ += nextSize;
+    T temp[nextSize];
+    std::unique_ptr<T> ptr(temp);
+    this->arrays.push_back(ptr);
+    this->capacity_ += nextSize;
   }
 
   int getLastArrNum() const
