@@ -48,7 +48,7 @@ public:
 
     // Value goes into last array in first open location
     int lastArr = this->getLastArrNum();
-    int arrNextLoc = this->size_ - getConsecMaxArrSize(lastArr - 1) + 1;
+    int arrNextLoc = this->size_ - getConsecMaxArrSize(lastArr - 1);
 
     *(this->arrays[lastArr])[arrNextLoc] = value;
     size_ += 1;
@@ -57,7 +57,9 @@ public:
 // Operators -----------
 public:
   const T& operator[](int index) const {
-
+    int arrNum = log2(index);
+    int position = index - getConsecMaxArrSize(arrNum - 1) - 1;
+    return *(this->arrays[arrNum])[position];
   }
   T& operator[](int index) {
     // TODO
