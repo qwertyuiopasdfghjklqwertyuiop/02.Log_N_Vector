@@ -74,6 +74,7 @@ public:
     int position = index - getConsecMaxArrSize(arrNum - 1);
     return this->arrays[arrNum][position];
   }
+
   T& operator[](int index) {
     int arrNum = log2(index + 1);
     int position = index - getConsecMaxArrSize(arrNum - 1);
@@ -116,6 +117,6 @@ private:
   }
 
 
-};
+};  // end class LogNVector
 
 #endif // _log_n_vector_h_

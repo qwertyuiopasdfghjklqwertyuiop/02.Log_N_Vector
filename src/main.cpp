@@ -16,5 +16,11 @@ int main() {
          << "&v[" << j << "] - &v[" << j - 1 << "] == "
          << &v[j] - &v[j - 1] << endl;
   }
+
+
+  LogNVector<int> copy(v);
+  for(int k = 0; k < copy.size(); k++)
+    std::cout << copy[k] << std::endl;
+
   return 0;
 }
